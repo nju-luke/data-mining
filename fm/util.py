@@ -21,7 +21,7 @@ def onehot_encoder(labels, NUM_CLASSES):
     with tf.Session() as sess:
         return sess.run(onehot_labels)
 
-def load_dataset():
+def load_dataset(is_label_onhot = True):
     header = ['user_id', 'age', 'gender', 'occupation', 'zip_code']
     df_user = pd.read_csv('data/u.user', sep='|', names=header)
     header = ['item_id', 'title', 'release_date', 'video_release_date', 'IMDb_URL', 'unknown', 'Action', 'Adventure', 'Animation', 'Children',
@@ -48,11 +48,17 @@ def load_dataset():
     df_test['rating'] = df_test.rating.apply(lambda x: 1 if int(x) == 5 else 0)
     df_test = df_test.merge(df_user, on='user_id', how='left') 
     df_test = df_test.merge(df_item, on='item_id', how='left')
-    train_labels = onehot_encoder(df_train['rating'].astype(np.int32), 2)
-    test_labels = onehot_encoder(df_test['rating'].astype(np.int32), 2)
-    return df_train[cols].values, train_labels, df_test[cols].values, test_labels
+    if is_label_onhot:
+        train_labels = onehot_encoder(df_train['rating'].astype(np.int32), 2)
+        test_labels = onehot_encoder(df_test['rating'].astype(np.int32), 2)
+        return df_train[cols].values, train_labels, df_test[cols].values, test_labels
+    else:
+        return df_train[cols].values, df_train['rating'].astype(np.float), \
+               df_test[cols].values, df_test['rating'].astype(np.float)
+
 
 
 
 if __name__ == '__main__':
-    load_dataset()
+    res = load_dataset()
+    print('done')

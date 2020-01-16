@@ -179,7 +179,8 @@ if __name__ == '__main__':
     '''launching TensorBoard: tensorboard --logdir=path/to/log-directory'''
     # get mode (train or test)
     parser = argparse.ArgumentParser()
-    parser.add_argument('--mode', help='train or test', type=str)
+    parser.add_argument('--mode', help='train or test', type=str,
+                        default='train')
     args = parser.parse_args()
     mode = args.mode
     # length of representation
